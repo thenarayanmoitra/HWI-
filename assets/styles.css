@@ -174,11 +174,11 @@ button { font-family: inherit; cursor: pointer; }
   font-weight: 400;
   text-transform: uppercase;
 }
-.navlinks { display: flex; gap: 24px; align-items: center; }
+.navlinks { display: flex; gap: 16px; align-items: center; }
 .navlinks a {
   font-family: var(--display);
-  font-size: 11px;
-  letter-spacing: 0.1em;
+  font-size: 10px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--cream);
   transition: color 0.2s;
@@ -1211,11 +1211,7 @@ button { font-family: inherit; cursor: pointer; }
   .charity-feature-body h3 { font-size: 24px; }
 }
 
-/* =========================================================
-   NAV UPDATE — tighter spacing, no clutter
-   ========================================================= */
-.navlinks { display: flex; gap: 16px; align-items: center; }
-.navlinks a { font-size: 10px; letter-spacing: 0.08em; }
+/* NAV UPDATE — tighter spacing applied only at desktop */
 
 /* =========================================================
    PHOTO LIBRARY — 4:5 grid rows
@@ -1369,8 +1365,6 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 960px) {
   .photo-library { grid-template-columns: repeat(3, 1fr); }
-  .navlinks { gap: 12px; }
-  .navlinks a { font-size: 9px; }
 }
 @media (max-width: 560px) {
   .photo-library { grid-template-columns: repeat(2, 1fr); }
