@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — Frequently Asked Questions — Han Wong International</title>
+<meta name="description" content="Common questions about HWI tournaments, registration, judging, charity work, and the dojang partnership program.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.bunny.net/css?family=aileron:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+
+</head>
+<body>
+
+  <!-- HWI Registration Popup -->
+<div class="hwi-popup-overlay" id="hwiPopup">
+  <div class="hwi-popup">
+    <button class="hwi-popup-close" onclick="closeHwiPopup()">✕</button>
+    <div class="hwi-popup-tag">★ Han Wong International</div>
+    <h2>Stay in the<br>loop.</h2>
+    <p>Get tournament announcements, registration deadlines, results, and charity updates — straight to your inbox. No spam. One email per tournament cycle.</p>
+    <form class="hwi-popup-form" action="https://formspree.io/f/xbdvjlvo" method="POST" onsubmit="handleHwiSubmit(event)">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email address" required>
+      <input type="hidden" name="source" value="Popup Signup">
+      <button type="submit">Subscribe to Updates →</button>
+    </form>
+    <div class="hwi-popup-success" id="hwiSuccess">You're in. We'll be in touch.</div>
+    <button class="hwi-popup-skip" onclick="closeHwiPopup()">No thanks, maybe later</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var shownCount = 0;
+
+  function showPopup() {
+    if (shownCount >= 2) return;
+    document.getElementById('hwiPopup').classList.add('active');
+    shownCount++;
+  }
+
+  function closeHwiPopup() {
+    document.getElementById('hwiPopup').classList.remove('active');
+    if (shownCount < 2) {
+      setTimeout(showPopup, 20000);
+    }
+  }
+
+  window.closeHwiPopup = closeHwiPopup;
+
+  window.handleHwiSubmit = function(e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function() {
+      form.style.display = 'none';
+      document.getElementById('hwiSuccess').style.display = 'block';
+      setTimeout(function() {
+        document.getElementById('hwiPopup').classList.remove('active');
+      }, 2500);
+    });
+  };
+
+  setTimeout(showPopup, 8000);
+})();
+</script>
+<div class="ticker">
+  <div class="ticker-track">
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">HW.</div>
+      <div class="brand-name">Han Wong International<span class="sub">Est. 2020 · Scotland</span></div>
+    </a>
+    <nav class="navlinks">
+      <a href="tournaments.html" class="">Tournaments</a>
+      <a href="rankings.html" class="">Rankings</a>
+      <a href="charity.html" class="">Charity</a>
+      <a href="brand-ambassadors.html" class="">Ambassadors</a>
+      <a href="hall-of-fame.html">Hall of Fame</a>
+      <a href="partnership.html" class="">Partnership</a>
+      <a href="about.html" class="">About</a>
+      <a href="faq.html" class="active">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register →</a>
+    <button class="nav-toggle" aria-label="Menu">Menu</button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs">Home / FAQ</div>
+    <h1>Frequently Asked<br><span class="accent">Questions.</span></h1>
+    <p class="lede">Everything about competing, partnering, judging, the charity model, and how online tournaments work. If we missed something, the Contact page is one click away.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-narrow">
+    <div class="section-label">— The Essentials —</div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">How do I register for a tournament?<span class="plus"></span></button>
+        <div class="faq-a">Click any Register button on the site — you'll be redirected to our official Google Form for the current tournament. Fill it out, submit your video link, and you're entered. We'll confirm by email within 48 hours.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is HWI really an online-only tournament?<span class="plus"></span></button>
+        <div class="faq-a">Yes. Athletes record their performance at their dojang or at home in a single uncut take, then upload via the link in their registration confirmation. No travel, no visas, no accommodation costs — competition at 1/10th the price of a physical international event.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Where does the registration fee go?<span class="plus"></span></button>
+        <div class="faq-a">100% of registration fees go to charity. Food aid, school supplies, medical assistance, disaster relief, and the Bike Ambulance service in rural India. We document every project across our social media — full transparency is part of the model.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What categories can I compete in?<span class="plus"></span></button>
+        <div class="faq-a">Individual Poomsae, Pairs Poomsae, Team Poomsae, Speed Kicking, Freestyle, Kyukpa (breaking), and Para-Poomsae. Categories vary slightly by tournament — the full list arrives with your tournament outline after registration.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Who judges the events?<span class="plus"></span></button>
+        <div class="faq-a">Certified, experienced Taekwondo masters from around the world, under the direct guidance of Grand Master Han Wong (9th Dan, Kukkiwon). Our nine brand ambassadors include Grand Masters from Egypt, Italy, the United States, Australia, Malaysia, the UAE, Croatia, and more.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">What do I receive if I compete?<span class="plus"></span></button>
+        <div class="faq-a">Every participant receives a high-quality medal shipped directly to your address (or your dojang's address). Partner dojangs in the Gold tier and above also receive a physical Team Trophy. Plus you get the livestream coverage, certificate, and an entry in our global team rankings.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can my whole dojang register together?<span class="plus"></span></button>
+        <div class="faq-a">Yes — this is the Dojang Partnership Program. Coaches and dojang directors can register 5+ students at once with tiered discounts, consolidated shipping, and dedicated support. See the Partnership page for details.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How do I submit my competition video?<span class="plus"></span></button>
+        <div class="faq-a">Record in a single uncut take, landscape orientation, with the full athlete in frame including the opening bow. State your name, country, belt, and chosen form on camera before beginning. Upload via unlisted YouTube link or shared Google Drive URL through the form.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">When are tournaments held each year?<span class="plus"></span></button>
+        <div class="faq-a">Three per year — Scotland International Open in March, Han Wong International Open in July, and Edinburgh International Open in November. Registration typically opens 6-8 weeks before each tournament closes.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is HWI affiliated with any official body?<span class="plus"></span></button>
+        <div class="faq-a">HWI is operated by Han Wong International Academy, Scotland, founded by Grand Master Han Wong — a 9th Dan from five organisations including Kukkiwon. We are an independent online charity tournament series, not an official federation, but our judging council includes certified masters from world-recognised organisations.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">How can I contact you?<span class="plus"></span></button>
+        <div class="faq-a">Email director@hanwonginternational.org, or use the contact form on our Contact page. Coaches and dojang partners can also reach us via WhatsApp — the number is provided on the Contact page.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 48px; padding: 32px; background: var(--bg-2); border: 1px solid var(--rule); display: flex; gap: 24px; align-items: center; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 240px;">
+        <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; color: var(--orange); text-transform: uppercase; margin-bottom: 8px;">Couldn't find your answer?</div>
+        <div style="font-family: var(--display); font-size: 22px; color: var(--cream); text-transform: uppercase; letter-spacing: -0.01em; line-height: 1.2;">Reach out — we reply within 48 hours.</div>
+      </div>
+      <a class="btn btn-primary" href="contact.html">Contact Us →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="foot-tag">Han Wong<br>International</div>
+      <div class="foot-small">Operated by Han Wong International Academy, Scotland. Three tournaments per year. 100% of registration fees go to charity. hanwonginternational.org</div>
+    </div>
+    <div>
+      <div class="foot-h">Compete</div>
+      <a class="foot-link" href="tournaments.html">Tournaments</a>
+      <a class="foot-link" href="rankings.html">Rankings</a>
+      <a class="foot-link" href="past-results.html">Past Results</a>
+    </div>
+    <div>
+      <div class="foot-h">Discover</div>
+      <a class="foot-link" href="charity.html">Charity Work</a>
+      <a class="foot-link" href="brand-ambassadors.html">Ambassadors</a>
+      <a class="foot-link" href="hall-of-fame.html">Hall of Fame</a>
+      <a class="foot-link" href="about.html">About GM Han Wong</a>
+    </div>
+    <div>
+      <div class="foot-h">Connect</div>
+      <a class="foot-link" href="partnership.html">Partnership</a>
+      <a class="foot-link" href="faq.html">FAQ</a>
+      <a class="foot-link" href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="belt-strip">
+    <div class="belt-yellow"></div><div class="belt-green"></div><div class="belt-blue"></div><div class="belt-red"></div><div class="belt-black"></div>
+  </div>
+  <div class="copyright">
+    <span>© 2026 Han Wong International · All rights reserved</span>
+    <span>director@hanwonginternational.org</span>
+  </div>
+</footer>
+
+<script src="assets/script.js"></script>
+</body>
+</html>

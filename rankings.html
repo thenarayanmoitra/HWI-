@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rankings — Han Wong International</title>
+<meta name="description" content="Team rankings for HWI tournaments. Top dojangs aggregated across the season by athlete entries and medals won.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.bunny.net/css?family=aileron:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+
+</head>
+<body>
+
+  <!-- HWI Registration Popup -->
+<div class="hwi-popup-overlay" id="hwiPopup">
+  <div class="hwi-popup">
+    <button class="hwi-popup-close" onclick="closeHwiPopup()">✕</button>
+    <div class="hwi-popup-tag">★ Han Wong International</div>
+    <h2>Stay in the<br>loop.</h2>
+    <p>Get tournament announcements, registration deadlines, results, and charity updates — straight to your inbox. No spam. One email per tournament cycle.</p>
+    <form class="hwi-popup-form" action="https://formspree.io/f/xbdvjlvo" method="POST" onsubmit="handleHwiSubmit(event)">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email address" required>
+      <input type="hidden" name="source" value="Popup Signup">
+      <button type="submit">Subscribe to Updates →</button>
+    </form>
+    <div class="hwi-popup-success" id="hwiSuccess">You're in. We'll be in touch.</div>
+    <button class="hwi-popup-skip" onclick="closeHwiPopup()">No thanks, maybe later</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var shownCount = 0;
+
+  function showPopup() {
+    if (shownCount >= 2) return;
+    document.getElementById('hwiPopup').classList.add('active');
+    shownCount++;
+  }
+
+  function closeHwiPopup() {
+    document.getElementById('hwiPopup').classList.remove('active');
+    if (shownCount < 2) {
+      setTimeout(showPopup, 20000);
+    }
+  }
+
+  window.closeHwiPopup = closeHwiPopup;
+
+  window.handleHwiSubmit = function(e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function() {
+      form.style.display = 'none';
+      document.getElementById('hwiSuccess').style.display = 'block';
+      setTimeout(function() {
+        document.getElementById('hwiPopup').classList.remove('active');
+      }, 2500);
+    });
+  };
+
+  setTimeout(showPopup, 8000);
+})();
+</script>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">HW.</div>
+      <div class="brand-name">Han Wong International<span class="sub">Est. 2020 · Scotland</span></div>
+    </a>
+    <nav class="navlinks">
+      <a href="tournaments.html" class="">Tournaments</a>
+      <a href="rankings.html" class="active">Rankings</a>
+      <a href="charity.html" class="">Charity</a>
+      <a href="brand-ambassadors.html" class="">Ambassadors</a>
+      <a href="hall-of-fame.html">Hall of Fame</a>
+      <a href="partnership.html" class="">Partnership</a>
+      <a href="about.html" class="">About</a>
+      <a href="faq.html" class="">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register →</a>
+    <button class="nav-toggle" aria-label="Menu">Menu</button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs">Home / Rankings</div>
+    <h1>Team<br><span class="accent">Rankings.</span></h1>
+    <p class="lede">Where the dojangs stand. Aggregated across every cycle by team size and medals earned. Updated after every tournament.</p>
+  </div>
+</section>
+
+
+<div class="flag-strip">
+  <div class="flag-track">
+    <span class="flag-label">Athletes from</span>
+    <span>🇮🇳 🇮🇩 🇲🇾 🇵🇭 🇰🇷 🇪🇬 🇮🇹 🇺🇸 🇦🇺 🇦🇪 🇭🇷 🇳🇬 🇧🇷 🇲🇽 🇰🇿 🇬🇧 🇪🇹 🇻🇳 🇸🇳 🇯🇵 🇨🇦 🇸🇬 🇿🇦 🇦🇷 🇨🇴 🇨🇱 🇵🇪 🇹🇷 🇸🇦 🇶🇦 🇵🇰 🇧🇩 🇱🇰 🇳🇵 🇹🇭 🇲🇲 🇰🇭 🇰🇪 🇬🇭 🇩🇪 🇫🇷 🇪🇸 🇵🇹 🇳🇱 🇸🇪 🇮🇪 🇲🇦 🇹🇳 🇩🇿 🇮🇱 🇮🇳 🇮🇩 🇲🇾 🇵🇭 🇰🇷 🇪🇬 🇮🇹 🇺🇸 🇦🇺 🇦🇪 🇭🇷 🇳🇬 🇧🇷 🇲🇽 🇰🇿 🇬🇧 🇪🇹 🇻🇳 🇸🇳 🇯🇵 🇨🇦 🇸🇬 🇿🇦 🇦🇷 🇨🇴 🇨🇱 🇵🇪 🇹🇷 🇸🇦 🇶🇦 🇵🇰 🇧🇩 🇱🇰 🇳🇵 🇹🇭 🇲🇲 🇰🇭 🇰🇪 🇬🇭 🇩🇪 🇫🇷 🇪🇸 🇵🇹 🇳🇱 🇸🇪 🇮🇪 🇲🇦 🇹🇳 🇩🇿 🇮🇱</span>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 — Current Team Standings</div>
+    <h2 class="section-h">Top dojangs of the season.</h2>
+
+    <div class="rank-tabs">
+      <button class="rank-tab active">All categories</button>
+    
+    </div>
+
+    <div class="rank-table">
+      <div class="rank-header">
+        <span>Pos</span><span>Dojang / School</span><span>Country</span><span>Athletes</span><span class="rank-pts-h">Medals</span>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos top">01</div>
+        <div><div class="rank-name">Olympic Minsk</div><div class="rank-info">GM Hamid Nouri</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇧🇾</span>BLR</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos top">02</div>
+        <div><div class="rank-name">Golden Eagle Taekwondo</div><div class="rank-info">Kanawat Sukcharoen</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇹🇭</span>THA</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos top">03</div>
+        <div><div class="rank-name">Central Iowa Taekwondo Poomsae </div><div class="rank-info">GM Jim Harp </div></div>
+        <div class="rank-country"><span class="flag-emoji">🇺🇸</span>USA</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">04</div>
+        <div><div class="rank-name">Kalgoorlie Martial Arts</div><div class="rank-info">Master James Kolatowicz</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇦🇺</span>AUS</div>
+       <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">05</div>
+        <div><div class="rank-name">Taekwondo Club Junglinster</div><div class="rank-info">Teresa Majerus-Bednarz</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇱🇺</span>LUX</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">06</div>
+        <div><div class="rank-name">MTC Ringwood</div><div class="rank-info">Jamie Marsh</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇦🇺</span>AUS</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">07</div>
+        <div><div class="rank-name">Dojang Ready Karo Simalem</div><div class="rank-info">GM Nim Wenglie</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇮🇩</span>IDN</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">08</div>
+        <div><div class="rank-name">Kalam Uv International Academy </div><div class="rank-info">Master Yuvaraj Loganathan</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇮🇳</span>IND</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">09</div>
+        <div><div class="rank-name">CMK Singapore</div><div class="rank-info">Bambang Suryaputra</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇸🇬</span>SGP</div>
+       <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">10</div>
+        <div><div class="rank-name">Mohd Hafiz Bin MD Yusof </div><div class="rank-info">Kelab Taekwondo Lagenda Langkawi</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇲🇾</span>MYS</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">11</div>
+        <div><div class="rank-name">CMK Qatar</div><div class="rank-info">GM Wissam Elsharkawi</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇶🇦</span>QAT</div>
+      <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-pos ">12</div>
+        <div><div class="rank-name">Raptor Taekwondo</div><div class="rank-info">Troy Henson</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇦🇺</span>AUS</div>
+        <div class="rank-cat">0</div>
+        <div class="rank-pts">0</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div class="mono" style="font-size: 11px; color: var(--muted);">Last updated · after 6th Scotland Open 2026</div>
+      <a class="btn btn-ghost" href="partnership.html">Partner Your Dojang →</a>
+    </div>
+  </div>
+</section>
+
+<section class="section rankings-bg">
+  <div class="wrap">
+    <div class="section-label">02 — Winning Teams</div>
+    <h2 class="section-h">Champions from<br>the last cycle.</h2>
+    <div class="amb-grid">
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇹🇭</span>
+          <img src="assets/images/i1.jpg" alt="Tirak Taekwondo">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">Tirak Taekwondo</div>
+          <div class="amb-meta">Thailand</div>
+        </div>
+      </div>
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇮🇹</span>
+          <img src="assets/images/i2.jpg" alt="A.S.D. Taekwondo Pennetta Rosa">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">A.S.D. Taekwondo Pennetta Rosa</div>
+          <div class="amb-meta">Italy</div>
+        </div>
+      </div>
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇺🇸</span>
+          <img src="assets/images/i3.jpg" alt="Central Iowa Taekwondo Poomsae">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">Central Iowa Taekwondo Poomsae</div>
+          <div class="amb-meta">United States</div>
+        </div>
+      </div>
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇦🇺</span>
+          <img src="assets/images/i4.jpg" alt="Kalgoorlie Martial Arts">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">Kalgoorlie Martial Arts</div>
+          <div class="amb-meta">Australia</div>
+        </div>
+      </div>
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇧🇩</span>
+          <img src="assets/images/i5.jpg" alt="CMK Bangladesh">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">CMK Bangladesh</div>
+          <div class="amb-meta">Bangladesh</div>
+        </div>
+      </div>
+
+      <div class="amb-card">
+        <div class="amb-img">
+          <span class="amb-flag">🇶🇦</span>
+          <img src="assets/images/i6.jpg" alt="CMK Qatar">
+        </div>
+        <div class="amb-body">
+          <div class="amb-name">CMK Qatar</div>
+          <div class="amb-meta">Qatar</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 — By the Numbers</div>
+    <h2 class="section-h">The ranking, in shape.</h2>
+    <div class="trust-grid" style="background: transparent; padding: 0;">
+      <div><div class="trust-num" style="color: var(--cream);">340</div><div class="trust-lbl" style="color: var(--muted);">Ranked teams</div></div>
+      <div><div class="trust-num" style="color: var(--cream);">50</div><div class="trust-lbl" style="color: var(--muted);">Countries on the board</div></div>
+      <div><div class="trust-num" style="color: var(--cream);">22</div><div class="trust-lbl" style="color: var(--muted);">Active categories</div></div>
+      <div><div class="trust-num" style="color: var(--cream);">3</div><div class="trust-lbl" style="color: var(--muted);">Tournaments per cycle</div></div>
+      <div><div class="trust-num small" style="color: var(--cream);">TEAM<br>FIRST</div><div class="trust-lbl" style="color: var(--muted);">Ranking philosophy</div></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="foot-tag">Han Wong<br>International</div>
+      <div class="foot-small">Operated by Han Wong International Academy, Scotland. Three tournaments per year. 100% of registration fees go to charity. hanwonginternational.org</div>
+    </div>
+    <div>
+      <div class="foot-h">Compete</div>
+      <a class="foot-link" href="tournaments.html">Tournaments</a>
+      <a class="foot-link" href="rankings.html">Rankings</a>
+      <a class="foot-link" href="past-results.html">Past Results</a>
+    </div>
+    <div>
+      <div class="foot-h">Discover</div>
+      <a class="foot-link" href="charity.html">Charity Work</a>
+      <a class="foot-link" href="brand-ambassadors.html">Ambassadors</a>
+      <a class="foot-link" href="hall-of-fame.html">Hall of Fame</a>
+      <a class="foot-link" href="about.html">About GM Han Wong</a>
+    </div>
+    <div>
+      <div class="foot-h">Connect</div>
+      <a class="foot-link" href="partnership.html">Partnership</a>
+      <a class="foot-link" href="faq.html">FAQ</a>
+      <a class="foot-link" href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="belt-strip">
+    <div class="belt-yellow"></div><div class="belt-green"></div><div class="belt-blue"></div><div class="belt-red"></div><div class="belt-black"></div>
+  </div>
+  <div class="copyright">
+    <span>© 2026 Han Wong International · All rights reserved</span>
+    <span>director@hanwonginternational.org</span>
+  </div>
+</footer>
+
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dojang Partnership Program — Han Wong International</title>
+<meta name="description" content="Join HWI's Dojang Partnership Program — tiered discounts from 5% to 40%, team trophies, priority shipping, and global recognition for your school.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.bunny.net/css?family=aileron:400,500,700" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+
+</head>
+<body>
+
+  <!-- HWI Registration Popup -->
+<div class="hwi-popup-overlay" id="hwiPopup">
+  <div class="hwi-popup">
+    <button class="hwi-popup-close" onclick="closeHwiPopup()">✕</button>
+    <div class="hwi-popup-tag">★ Han Wong International</div>
+    <h2>Stay in the<br>loop.</h2>
+    <p>Get tournament announcements, registration deadlines, results, and charity updates — straight to your inbox. No spam. One email per tournament cycle.</p>
+    <form class="hwi-popup-form" action="https://formspree.io/f/xbdvjlvo" method="POST" onsubmit="handleHwiSubmit(event)">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email address" required>
+      <input type="hidden" name="source" value="Popup Signup">
+      <button type="submit">Subscribe to Updates →</button>
+    </form>
+    <div class="hwi-popup-success" id="hwiSuccess">You're in. We'll be in touch.</div>
+    <button class="hwi-popup-skip" onclick="closeHwiPopup()">No thanks, maybe later</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var shownCount = 0;
+
+  function showPopup() {
+    if (shownCount >= 2) return;
+    document.getElementById('hwiPopup').classList.add('active');
+    shownCount++;
+  }
+
+  function closeHwiPopup() {
+    document.getElementById('hwiPopup').classList.remove('active');
+    if (shownCount < 2) {
+      setTimeout(showPopup, 20000);
+    }
+  }
+
+  window.closeHwiPopup = closeHwiPopup;
+
+  window.handleHwiSubmit = function(e) {
+    e.preventDefault();
+    var form = e.target;
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    }).then(function() {
+      form.style.display = 'none';
+      document.getElementById('hwiSuccess').style.display = 'block';
+      setTimeout(function() {
+        document.getElementById('hwiPopup').classList.remove('active');
+      }, 2500);
+    });
+  };
+
+  setTimeout(showPopup, 8000);
+})();
+</script>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+    <span>★ 100% of registration fees go to charity</span>
+    <span>★ Under the guidance of Grand Master Han Wong · 9th Dan</span>
+    <span>★ 2000+ athletes · $10k+ donated · 6 editions · 50+ countries</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">HW.</div>
+      <div class="brand-name">Han Wong International<span class="sub">Est. 2020 · Scotland</span></div>
+    </a>
+    <nav class="navlinks">
+      <a href="tournaments.html">Tournaments</a>
+      <a href="rankings.html">Rankings</a>
+      <a href="charity.html">Charity</a>
+      <a href="brand-ambassadors.html">Ambassadors</a>
+      <a href="hall-of-fame.html">Hall of Fame</a>
+      <a href="partnership.html" class="active">Partnership</a>
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register →</a>
+    <button class="nav-toggle" aria-label="Menu">Menu</button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumbs">Home / Partnership</div>
+    <h1>Dojang<br><span class="accent">Partnership.</span></h1>
+    <p class="lede">Bring global, mission-driven competition to your students. Save up to 40% on team registration. Get dedicated support, team trophies, and recognition that boosts your dojang's prestige.</p>
+  </div>
+</section>
+
+<!-- FIRST CTA -->
+<div style="background: var(--orange); padding: 28px 0;">
+  <div class="wrap" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+    <div>
+      <div style="font-family: var(--display); font-size: 20px; color: var(--bg); text-transform: uppercase; letter-spacing: -0.01em;">Ready to partner? Discounts from 5% to 40% off.</div>
+      <div style="font-family: var(--mono); font-size: 11px; color: #2a1a14; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 6px;">Fill in the form and we'll send your full outline within 48 hours.</div>
+    </div>
+    <a class="btn btn-dark" href="https://forms.gle/8B7C7b8syNo3ztLY7" target="_blank">Apply Now →</a>
+  </div>
+</div>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">01 — Why Partner</div>
+    <h2 class="section-h">Unlocking value<br>for your dojang.</h2>
+
+    <div class="why-grid">
+      <div class="why-cell"><div class="why-num">/ 01</div><div class="why-h">Up to 40% Discount</div><div class="why-p">Tiered savings based on your team size — from 5% for 5 entries up to 40% off for 50+ entries. Pass the savings to your students or retain them as dojang revenue. Applied automatically to your invoice, no codes needed.</div></div>
+      <div class="why-cell"><div class="why-num">/ 02</div><div class="why-h">Guaranteed Team Trophy</div><div class="why-p">Gold tier and above (20+ students) receive a physical Team Trophy shipped with your medals — perfect for awards ceremonies and display at your dojang.</div></div>
+      <div class="why-cell"><div class="why-num">/ 03</div><div class="why-h">Priority Consolidated Shipping</div><div class="why-p">All your team's medals dispatched in a single shipment to your dojang. Priority queue placement. Reduces individual athlete shipping cost by up to 70%.</div></div>
+      <div class="why-cell"><div class="why-num">/ 04</div><div class="why-h">Global Visibility</div><div class="why-p">Your dojang logo featured on the Official Partners page at hanwonginternational.org. Digital "Official Partner" badge for your website and social media channels.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOUNT TABLE -->
+<section class="section rankings-bg">
+  <div class="wrap">
+    <div class="section-label">02 — Discount Tiers</div>
+    <h2 class="section-h">The more students,<br>the bigger the saving.</h2>
+    <p style="font-size: 15px; color: var(--cream-dim); max-width: 640px; margin-bottom: 40px; line-height: 1.7;">Discounts apply to the total base entry fee for your team. Shipping fees for physical awards remain standard. No codes, no portals — we calculate your custom invoice and send it directly.</p>
+
+    <table class="tier-discount-table">
+      <thead>
+        <tr>
+          <th>Tier</th>
+          <th>Team Size</th>
+          <th>Discount</th>
+          <th>Key Benefits</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tier-label">Bronze</span></td>
+          <td class="tier-range-cell">5 – 9 entries</td>
+          <td><span class="discount-pct">5% OFF</span></td>
+          <td style="font-size: 13px; color: var(--muted);">Bulk discount · Consolidated shipping · Bulk entry portal</td>
+        </tr>
+        <tr>
+          <td><span class="tier-label">Silver</span></td>
+          <td class="tier-range-cell">10 – 19 entries</td>
+          <td><span class="discount-pct">10% OFF</span></td>
+          <td style="font-size: 13px; color: var(--muted);">Deeper discount · Priority shipping · Official Partner listing · Digital badge</td>
+        </tr>
+        <tr class="featured-row">
+          <td><span class="tier-label">Gold <span class="featured-badge">Most Popular</span></span></td>
+          <td class="tier-range-cell">20 – 29 entries</td>
+          <td><span class="discount-pct">20% OFF</span></td>
+          <td style="font-size: 13px; color: var(--muted);">Guaranteed Team Trophy · Featured Partner listing · Dedicated WhatsApp support · Excel upload portal</td>
+        </tr>
+        <tr>
+          <td><span class="tier-label">Platinum</span></td>
+          <td class="tier-range-cell">30 – 49 entries</td>
+          <td><span class="discount-pct">25% OFF</span></td>
+          <td style="font-size: 13px; color: var(--muted);">Higher discount · Team Trophy + medal kit · Account manager · Featured social mention</td>
+        </tr>
+        <tr>
+          <td><span class="tier-label">Diamond</span></td>
+          <td class="tier-range-cell">50+ entries</td>
+          <td><span class="discount-pct">40% OFF</span></td>
+          <td style="font-size: 13px; color: var(--muted);">Maximum discount · Premium Team Trophy · Priority everything · Press release inclusion · Custom arrangement</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="padding: 20px 24px; background: var(--bg); border: 1px solid var(--rule); font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; line-height: 1.65;">
+      Discounts apply to base entry fees only. Shipping fees for physical awards remain standard. Your invoice is calculated manually and sent by our team — no complicated codes or portals to navigate.
+    </div>
+  </div>
+</section>
+
+<!-- TIER CARDS -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-label">03 — At a Glance</div>
+    <h2 class="section-h">Five tiers.<br>Tailored to your scale.</h2>
+
+    <div class="tier-grid">
+      <div class="tier-card">
+        <div class="tier-name">Bronze</div>
+        <div class="tier-range">5 – 9 entries · 5% off</div>
+        <ul class="tier-benefits">
+          <li>5% discount on total base entry fee</li>
+          <li>Consolidated shipping to dojang</li>
+          <li>Bulk entry portal access</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Silver</div>
+        <div class="tier-range">10 – 19 entries · 10% off</div>
+        <ul class="tier-benefits">
+          <li>10% discount on total base entry fee</li>
+          <li>Priority shipping queue</li>
+          <li>Official Partner page listing</li>
+          <li>Digital partner badge</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Gold</div>
+        <div class="tier-range">20 – 29 entries · 20% off</div>
+        <ul class="tier-benefits">
+          <li>20% discount on total base entry fee</li>
+          <li>Guaranteed Physical Team Trophy</li>
+          <li>Featured Partner listing</li>
+          <li>Dedicated WhatsApp support</li>
+          <li>Excel bulk upload portal</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Platinum</div>
+        <div class="tier-range">30 – 49 entries · 25% off</div>
+        <ul class="tier-benefits">
+          <li>25% discount on total base entry fee</li>
+          <li>Team Trophy + medal kit</li>
+          <li>Dedicated account manager</li>
+          <li>Featured social media mention</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Diamond</div>
+        <div class="tier-range">50+ entries · 40% off</div>
+        <ul class="tier-benefits">
+          <li>40% discount on total base entry fee</li>
+          <li>Premium Team Trophy</li>
+          <li>Priority on everything</li>
+          <li>Press release inclusion</li>
+          <li>Custom support arrangement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO ACTIVATE -->
+<section class="section rankings-bg">
+  <div class="wrap">
+    <div class="section-label">04 — How to Activate</div>
+    <h2 class="section-h">Simple. Transparent.<br>Personal.</h2>
+
+    <div class="info-block">
+      <div><div class="info-num">/ 01</div><h3>Register Interest</h3></div>
+      <div class="body"><p>Fill out the partnership interest form below. Two minutes — we need your name, school, country, and an estimate of how many students you'd like to enter.</p><a class="btn btn-primary" href="https://forms.gle/8B7C7b8syNo3ztLY7" target="_blank" style="margin-top: 16px;">Fill the Partnership Form →</a></div>
+    </div>
+    <div class="info-block">
+      <div><div class="info-num">/ 02</div><h3>Receive Your Outline</h3></div>
+      <div class="body"><p>Within 48 hours, you'll receive a full partnership outline with your exact discount percentage, fee breakdown, shipping details, and tier recommendation based on your roster size. No surprises.</p></div>
+    </div>
+    <div class="info-block">
+      <div><div class="info-num">/ 03</div><h3>Get Your Invoice</h3></div>
+      <div class="body"><p>When you're ready to register your team, we send a single clear invoice with your partner discount applied automatically. No codes to remember. No portal logins. Just personal service from our team.</p><a class="btn btn-ghost" href="mailto:director@hanwonginternational.org" style="margin-top: 16px;">Email Us Directly →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-inner">
+    <div>
+      <div class="label">— Ready to Join the Alliance? —</div>
+      <h2>Become a<br>partner dojang.</h2>
+      <p>Fill out the partnership interest form and we'll send your full outline within 48 hours. Save up to 40% on team registration and give your students a global stage.</p>
+      <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+        <a class="btn btn-dark" href="https://forms.gle/8B7C7b8syNo3ztLY7" target="_blank">Partnership Form →</a>
+        <a class="btn btn-ghost" style="border-color: #0f0f0f; color: #0f0f0f;" href="mailto:director@hanwonginternational.org">Email Us Directly →</a>
+        <a class="btn btn-ghost" style="border-color: #0f0f0f; color: #0f0f0f;" href="https://wa.me/918637356998" target="_blank">WhatsApp Us →</a>
+      </div>
+      <div style="margin-top: 24px; font-family: var(--mono); font-size: 11px; color: #2a1a14; letter-spacing: 0.12em; text-transform: uppercase;">director@hanwonginternational.org · +91 86373 56998</div>
+    </div>
+    <div class="final-cta-mark"><div class="mark">HW.</div><div class="stamp">Empowering Dojangs · Serving Humanity</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="foot-tag">Han Wong<br>International</div>
+      <div class="foot-small">Operated by Han Wong International Academy, Scotland. Three tournaments per year. 100% of registration fees go to charity. hanwonginternational.org</div>
+    </div>
+    <div>
+      <div class="foot-h">Compete</div>
+      <a class="foot-link" href="tournaments.html">Tournaments</a>
+      <a class="foot-link" href="rankings.html">Rankings</a>
+      <a class="foot-link" href="past-results.html">Past Results</a>
+    </div>
+    <div>
+      <div class="foot-h">Discover</div>
+      <a class="foot-link" href="charity.html">Charity Work</a>
+      <a class="foot-link" href="brand-ambassadors.html">Ambassadors</a>
+      <a class="foot-link" href="hall-of-fame.html">Hall of Fame</a>
+      <a class="foot-link" href="about.html">About GM Han Wong</a>
+    </div>
+    <div>
+      <div class="foot-h">Connect</div>
+      <a class="foot-link" href="partnership.html">Partnership</a>
+      <a class="foot-link" href="faq.html">FAQ</a>
+      <a class="foot-link" href="contact.html">Contact</a>
+    </div>
+  </div>
+  <div class="belt-strip">
+    <div class="belt-yellow"></div><div class="belt-green"></div><div class="belt-blue"></div><div class="belt-red"></div><div class="belt-black"></div>
+  </div>
+  <div class="copyright">
+    <span>© 2026 Han Wong International · All rights reserved</span>
+    <span>director@hanwonginternational.org</span>
+  </div>
+</footer>
+
+<script src="assets/script.js"></script>
+</body>
+</html>
