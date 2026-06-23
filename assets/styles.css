@@ -1,6 +1,6 @@
 /* =========================================================
    HWI — Han Wong International
-   Master stylesheet · v2
+   Master stylesheet · v3
    ========================================================= */
 
 :root {
@@ -25,7 +25,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   background: var(--bg);
   color: var(--cream);
@@ -34,6 +34,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; display: block; }
@@ -194,6 +195,7 @@ button { font-family: inherit; cursor: pointer; }
   font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  margin-left: 12px;
 }
 
 /* Buttons */
@@ -709,7 +711,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Cards */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 24px;
 }
 .card { background: var(--bg-2); border: 1px solid var(--rule); padding: 32px; transition: border-color 0.2s, transform 0.2s; }
@@ -852,7 +854,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Partnership tiers — no prices */
 .tier-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 16px;
 }
 .tier-card {
@@ -1047,7 +1049,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Downloads */
 .download-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 20px;
 }
 .download-card {
@@ -1114,7 +1116,7 @@ button { font-family: inherit; cursor: pointer; }
 /* Past events */
 .past-events {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
