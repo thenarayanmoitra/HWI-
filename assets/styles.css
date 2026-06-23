@@ -1,6 +1,6 @@
 /* =========================================================
-   HWI â€” Han Wong International
-   Master stylesheet Â· v4
+   HWI — Han Wong International
+   Master stylesheet · v5
    ========================================================= */
 
 :root {
@@ -297,7 +297,7 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 24px;
 }
 .charity-badge::before {
-  content: "â™¥";
+  content: "\2665";
   font-size: 14px;
   line-height: 1;
 }
@@ -852,7 +852,7 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--orange);
 }
 
-/* Partnership tiers â€” no prices */
+/* Partnership tiers — no prices */
 .tier-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
@@ -908,7 +908,7 @@ button { font-family: inherit; cursor: pointer; }
   margin-bottom: 10px;
 }
 .tier-benefits li::before {
-  content: "âœ“";
+  content: "\2713";
   position: absolute;
   left: 0;
   top: 0;
@@ -1257,7 +1257,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* =========================================================
-   HALL OF FAME â€” complete styles
+   HALL OF FAME — complete styles
    ========================================================= */
 .hof-hero {
   padding: 80px 0 64px;
@@ -1435,7 +1435,7 @@ button { font-family: inherit; cursor: pointer; }
   overflow: hidden;
 }
 
-/* Rankings page â€” winning teams photos in 4:5 */
+/* Rankings page — winning teams photos in 4:5 */
 .amb-img {
   width: 100%;
   aspect-ratio: 4/5 !important;
@@ -1467,10 +1467,10 @@ button { font-family: inherit; cursor: pointer; }
   .hof-cta { padding: 32px 20px; }
 }
 
-/* NAV UPDATE â€” tighter spacing applied only at desktop */
+/* NAV UPDATE — tighter spacing applied only at desktop */
 
 /* =========================================================
-   PHOTO LIBRARY â€” 4:5 grid rows
+   PHOTO LIBRARY — 4:5 grid rows
    ========================================================= */
 .photo-library {
   display: grid;
@@ -1529,7 +1529,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* =========================================================
-   CHARITY PAGE â€” 4:5 tiles universal
+   CHARITY PAGE — 4:5 tiles universal
    ========================================================= */
 .charity-tile { aspect-ratio: 4/5; }
 .charity-tile.wide { aspect-ratio: auto; }
@@ -1592,7 +1592,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* =========================================================
-   HOF â€” swap order (Hall of Fame first, Achievers second)
+   HOF — swap order (Hall of Fame first, Achievers second)
    ========================================================= */
 .hof-achiever-badge { background: #c9a227; color: #0f0f0f; }
 
