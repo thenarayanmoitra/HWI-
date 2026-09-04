@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tournaments — Han Wong International</title>
-<meta name="description" content="6th Han Wong Worldwide Open Online Poomsae, Kyukpa and Speed Kicking Championship 2026. Registration deadline 30 July 2026.">
+<meta name="description" content="Three online Taekwondo championships a year from Han Wong International. The 6th Han Wong Worldwide Open 2026 is closed; the Edinburgh International Open is next, with registration opening soon.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -35,41 +35,83 @@
 </div>
 
 <script>
-(function() {
-  var shownCount = 0;
+(function () {
+  var LS_KEY       = 'hwiPopupState';
+  var SS_KEY       = 'hwiPopupSessionStart';
+  var FIRST_DELAY  = 20000;   // 1st showing: 20 seconds into the visit
+  var SECOND_DELAY = 120000;  // 2nd showing: 2 minutes after the 1st
+  var MAX_SHOWS    = 2;       // after that, never again
+  var timer = null;
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(s) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function sessionStart() {
+    try {
+      var t = parseInt(sessionStorage.getItem(SS_KEY), 10);
+      if (!t) { t = Date.now(); sessionStorage.setItem(SS_KEY, String(t)); }
+      return t;
+    } catch (e) { return Date.now(); }
+  }
+
+  function schedule() {
+    var s = load();
+    var shown = s.shown || 0;
+    if (shown >= MAX_SHOWS) return;
+    var due = shown === 0
+      ? sessionStart() + FIRST_DELAY
+      : (s.lastSeen || Date.now()) + SECOND_DELAY;
+    clearTimeout(timer);
+    timer = setTimeout(showPopup, Math.max(0, due - Date.now()));
+  }
 
   function showPopup() {
-    if (shownCount >= 2) return;
-    document.getElementById('hwiPopup').classList.add('active');
-    shownCount++;
+    var s = load();
+    if ((s.shown || 0) >= MAX_SHOWS) return;
+    var el = document.getElementById('hwiPopup');
+    if (!el) return;
+    el.classList.add('active');
+    s.shown = (s.shown || 0) + 1;
+    s.lastSeen = Date.now();
+    save(s);
   }
 
   function closeHwiPopup() {
-    document.getElementById('hwiPopup').classList.remove('active');
-    if (shownCount < 2) {
-      setTimeout(showPopup, 20000);
-    }
+    var el = document.getElementById('hwiPopup');
+    if (el) el.classList.remove('active');
+    var s = load();
+    s.lastSeen = Date.now();
+    save(s);
+    schedule();
   }
 
   window.closeHwiPopup = closeHwiPopup;
 
-  window.handleHwiSubmit = function(e) {
+  window.handleHwiSubmit = function (e) {
     e.preventDefault();
     var form = e.target;
     fetch(form.action, {
       method: 'POST',
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
-    }).then(function() {
+    }).then(function () {
       form.style.display = 'none';
       document.getElementById('hwiSuccess').style.display = 'block';
-      setTimeout(function() {
+      var s = load();
+      s.shown = MAX_SHOWS;          // subscribed — don't ask again
+      s.lastSeen = Date.now();
+      save(s);
+      setTimeout(function () {
         document.getElementById('hwiPopup').classList.remove('active');
       }, 2500);
     });
   };
 
-  setTimeout(showPopup, 8000);
+  schedule();
 })();
 </script>
 
@@ -116,25 +158,25 @@
 <!-- CURRENT TOURNAMENT -->
 <section class="section" style="background: linear-gradient(180deg, rgba(219,74,43,0.05) 0%, transparent 100%);">
   <div class="wrap">
-    <div class="section-label">01 — Open Now</div>
+    <div class="section-label">01 — Latest Edition · Now Closed</div>
     <h2 class="section-h">6th Han Wong<br>Worldwide Open.</h2>
 
     <div class="tournament-main-grid" style="margin-bottom: 48px;">
       <div>
-        <div class="card" style="border-color: var(--orange); border-width: 2px;">
-          <span class="card-status open">Open · Deadline 30 July 2026</span>
+        <div class="card">
+          <span class="card-status closed">Closed · Entries closed 30 July 2026</span>
           <h3>6th Han Wong<br>Worldwide Open Online</h3>
           <div class="card-meta">
             <div class="card-meta-row"><span class="k">Full Title</span><span class="v">Poomsae, Kyukpa & Speed Kicking 2026</span></div>
-            <div class="card-meta-row"><span class="k">Registration Deadline</span><span class="v" style="color: var(--orange);">30 July 2026</span></div>
-            <div class="card-meta-row"><span class="k">Video Submission</span><span class="v" style="color: var(--orange);">30 July 2026</span></div>
+            <div class="card-meta-row"><span class="k">Registration</span><span class="v">Closed · 30 July 2026</span></div>
+            <div class="card-meta-row"><span class="k">Video Submission</span><span class="v">Closed · 30 July 2026</span></div>
             <div class="card-meta-row"><span class="k">Judging Period</span><span class="v">1 – 6 Aug 2026</span></div>
             <div class="card-meta-row"><span class="k">Results Announced</span><span class="v">7 Aug 2026</span></div>
             <div class="card-meta-row"><span class="k">Format</span><span class="v">Online · Livestreamed</span></div>
             <div class="card-meta-row"><span class="k">Judged By</span><span class="v">WT-Certified Referees</span></div>
           </div>
-          <p style="margin-bottom: 28px;">Open to all belts and all categories. Every registration fee goes directly to humanitarian aid — food, medical care, education. Medals, official certificates, and global ranking points for all participants.</p>
-          <a class="btn btn-primary" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank" style="margin-bottom: 14px; width: 100%; justify-content: center;">Register Now →</a>
+          <p style="margin-bottom: 28px;">This edition is over and we are no longer accepting entries. Every registration fee went directly to humanitarian aid — food, medical care, education. Medals, official certificates, and global ranking points have been issued to all participants.</p>
+          <a class="btn btn-ghost" href="rankings.html" style="margin-bottom: 14px; width: 100%; justify-content: center;">See the Team Rankings →</a>
         </div>
 
         <div class="tournament-downloads-grid" style="margin-top: 20px;">
@@ -161,7 +203,7 @@
           <div>
             <div style="padding: 16px 0; border-bottom: 1px solid var(--rule-soft); display: flex; justify-content: space-between; align-items: center;">
               <div style="font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;">Registration Deadline</div>
-              <div style="font-family: var(--display); font-size: 14px; color: var(--orange); text-transform: uppercase;">30 Jul 2026</div>
+              <div style="font-family: var(--display); font-size: 14px; color: var(--cream); text-transform: uppercase;">30 Jul 2026</div>
             </div>
             <div style="padding: 16px 0; border-bottom: 1px solid var(--rule-soft); display: flex; justify-content: space-between; align-items: center;">
               <div style="font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;">Judging Period</div>
@@ -203,9 +245,23 @@
 <section class="section rankings-bg">
   <div class="wrap">
     <div class="section-label">02 — Coming Up</div>
-    <h2 class="section-h">2026 Tournament<br>Calendar.</h2>
+    <h2 class="section-h">Next up on<br>the calendar.</h2>
 
     <div class="cards-grid">
+      <div class="card" style="border-color: var(--orange); border-width: 2px;">
+        <span class="card-status open">Next Up · Registration Opening Soon</span>
+        <h3>Edinburgh<br>International Open</h3>
+        <div class="card-meta">
+          <div class="card-meta-row"><span class="k">Edition</span><span class="v">Annual · Edinburgh</span></div>
+          <div class="card-meta-row"><span class="k">Expected</span><span class="v">Late 2026</span></div>
+          <div class="card-meta-row"><span class="k">Registration</span><span class="v" style="color: var(--orange);">Opening Soon</span></div>
+          <div class="card-meta-row"><span class="k">Categories</span><span class="v">All + Hall of Fame</span></div>
+          <div class="card-meta-row"><span class="k">Format</span><span class="v">Online · Livestreamed</span></div>
+        </div>
+        <p>Our next championship and HWI's year-closing event, from its home city. We will launch the registration list shortly — join the announcement list and you will be the first to hear when entries open. All standard categories plus the annual Hall of Fame recognition cycle.</p>
+        <a class="btn btn-ghost" href="contact.html">Join the Registration List →</a>
+      </div>
+
       <div class="card">
         <span class="card-status upcoming">Registration Opening Soon</span>
         <h3>Scotland<br>International Open</h3>
@@ -216,19 +272,6 @@
           <div class="card-meta-row"><span class="k">Format</span><span class="v">Online · Livestreamed</span></div>
         </div>
         <p>The Scotland International Open returns in the first quarter of 2027. All categories, all belts, open to competitors worldwide. Registration details announced via WhatsApp groups and social media.</p>
-        <a class="btn btn-ghost" href="contact.html">Get Notified →</a>
-      </div>
-
-      <div class="card">
-        <span class="card-status upcoming">Registration Opening Soon</span>
-        <h3>Edinburgh<br>International Open</h3>
-        <div class="card-meta">
-          <div class="card-meta-row"><span class="k">Edition</span><span class="v">Annual · Edinburgh</span></div>
-          <div class="card-meta-row"><span class="k">Expected</span><span class="v">Late 2026</span></div>
-          <div class="card-meta-row"><span class="k">Categories</span><span class="v">All + Hall of Fame</span></div>
-          <div class="card-meta-row"><span class="k">Format</span><span class="v">Online · Livestreamed</span></div>
-        </div>
-        <p>HWI's year-closing championship from its home city. Features all standard categories plus the annual Hall of Fame recognition cycle for outstanding contributors to the sport.</p>
         <a class="btn btn-ghost" href="contact.html">Get Notified →</a>
       </div>
     </div>
@@ -263,15 +306,15 @@
 <section class="final-cta">
   <div class="final-cta-inner">
     <div>
-      <div class="label">— 6th Han Wong Worldwide Open · Deadline 30 July 2026 —</div>
-      <h2>Don't miss<br>this edition.</h2>
-      <p>Every fee funds humanitarian aid. Compete on the global stage, earn ranking points, receive your medal and certificate.</p>
+      <div class="label">— Next: Edinburgh International Open · Registration Opening Soon —</div>
+      <h2>Be first<br>in the queue.</h2>
+      <p>The 6th Han Wong Worldwide Open is over. Our next championship is the Edinburgh International Open — join the registration list now and we will email you the moment entries open.</p>
       <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-        <a class="btn btn-dark" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register Now →</a>
+        <a class="btn btn-dark" href="contact.html">Join the Registration List →</a>
         <a class="btn btn-ghost" style="border-color: #0f0f0f; color: #0f0f0f;" href="https://forms.gle/8B7C7b8syNo3ztLY7" target="_blank">Partner Your Dojang →</a>
       </div>
     </div>
-    <div class="final-cta-mark"><div class="mark">6TH</div><div class="stamp">Han Wong Worldwide Open · 2026</div></div>
+    <div class="final-cta-mark"><div class="mark">NEXT</div><div class="stamp">Edinburgh International Open</div></div>
   </div>
 </section>
 

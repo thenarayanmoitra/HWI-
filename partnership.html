@@ -44,41 +44,83 @@
 </div>
 
 <script>
-(function() {
-  var shownCount = 0;
+(function () {
+  var LS_KEY       = 'hwiPopupState';
+  var SS_KEY       = 'hwiPopupSessionStart';
+  var FIRST_DELAY  = 20000;   // 1st showing: 20 seconds into the visit
+  var SECOND_DELAY = 120000;  // 2nd showing: 2 minutes after the 1st
+  var MAX_SHOWS    = 2;       // after that, never again
+  var timer = null;
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(s) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function sessionStart() {
+    try {
+      var t = parseInt(sessionStorage.getItem(SS_KEY), 10);
+      if (!t) { t = Date.now(); sessionStorage.setItem(SS_KEY, String(t)); }
+      return t;
+    } catch (e) { return Date.now(); }
+  }
+
+  function schedule() {
+    var s = load();
+    var shown = s.shown || 0;
+    if (shown >= MAX_SHOWS) return;
+    var due = shown === 0
+      ? sessionStart() + FIRST_DELAY
+      : (s.lastSeen || Date.now()) + SECOND_DELAY;
+    clearTimeout(timer);
+    timer = setTimeout(showPopup, Math.max(0, due - Date.now()));
+  }
 
   function showPopup() {
-    if (shownCount >= 2) return;
-    document.getElementById('hwiPopup').classList.add('active');
-    shownCount++;
+    var s = load();
+    if ((s.shown || 0) >= MAX_SHOWS) return;
+    var el = document.getElementById('hwiPopup');
+    if (!el) return;
+    el.classList.add('active');
+    s.shown = (s.shown || 0) + 1;
+    s.lastSeen = Date.now();
+    save(s);
   }
 
   function closeHwiPopup() {
-    document.getElementById('hwiPopup').classList.remove('active');
-    if (shownCount < 2) {
-      setTimeout(showPopup, 20000);
-    }
+    var el = document.getElementById('hwiPopup');
+    if (el) el.classList.remove('active');
+    var s = load();
+    s.lastSeen = Date.now();
+    save(s);
+    schedule();
   }
 
   window.closeHwiPopup = closeHwiPopup;
 
-  window.handleHwiSubmit = function(e) {
+  window.handleHwiSubmit = function (e) {
     e.preventDefault();
     var form = e.target;
     fetch(form.action, {
       method: 'POST',
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
-    }).then(function() {
+    }).then(function () {
       form.style.display = 'none';
       document.getElementById('hwiSuccess').style.display = 'block';
-      setTimeout(function() {
+      var s = load();
+      s.shown = MAX_SHOWS;          // subscribed — don't ask again
+      s.lastSeen = Date.now();
+      save(s);
+      setTimeout(function () {
         document.getElementById('hwiPopup').classList.remove('active');
       }, 2500);
     });
   };
 
-  setTimeout(showPopup, 8000);
+  schedule();
 })();
 </script>
 

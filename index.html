@@ -44,43 +44,86 @@
 </div>
 
 <script>
-(function() {
-  var shownCount = 0;
+(function () {
+  var LS_KEY       = 'hwiPopupState';
+  var SS_KEY       = 'hwiPopupSessionStart';
+  var FIRST_DELAY  = 20000;   // 1st showing: 20 seconds into the visit
+  var SECOND_DELAY = 120000;  // 2nd showing: 2 minutes after the 1st
+  var MAX_SHOWS    = 2;       // after that, never again
+  var timer = null;
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(s) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function sessionStart() {
+    try {
+      var t = parseInt(sessionStorage.getItem(SS_KEY), 10);
+      if (!t) { t = Date.now(); sessionStorage.setItem(SS_KEY, String(t)); }
+      return t;
+    } catch (e) { return Date.now(); }
+  }
+
+  function schedule() {
+    var s = load();
+    var shown = s.shown || 0;
+    if (shown >= MAX_SHOWS) return;
+    var due = shown === 0
+      ? sessionStart() + FIRST_DELAY
+      : (s.lastSeen || Date.now()) + SECOND_DELAY;
+    clearTimeout(timer);
+    timer = setTimeout(showPopup, Math.max(0, due - Date.now()));
+  }
 
   function showPopup() {
-    if (shownCount >= 2) return;
-    document.getElementById('hwiPopup').classList.add('active');
-    shownCount++;
+    var s = load();
+    if ((s.shown || 0) >= MAX_SHOWS) return;
+    var el = document.getElementById('hwiPopup');
+    if (!el) return;
+    el.classList.add('active');
+    s.shown = (s.shown || 0) + 1;
+    s.lastSeen = Date.now();
+    save(s);
   }
 
   function closeHwiPopup() {
-    document.getElementById('hwiPopup').classList.remove('active');
-    if (shownCount < 2) {
-      setTimeout(showPopup, 20000);
-    }
+    var el = document.getElementById('hwiPopup');
+    if (el) el.classList.remove('active');
+    var s = load();
+    s.lastSeen = Date.now();
+    save(s);
+    schedule();
   }
 
   window.closeHwiPopup = closeHwiPopup;
 
-  window.handleHwiSubmit = function(e) {
+  window.handleHwiSubmit = function (e) {
     e.preventDefault();
     var form = e.target;
     fetch(form.action, {
       method: 'POST',
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
-    }).then(function() {
+    }).then(function () {
       form.style.display = 'none';
       document.getElementById('hwiSuccess').style.display = 'block';
-      setTimeout(function() {
+      var s = load();
+      s.shown = MAX_SHOWS;          // subscribed — don't ask again
+      s.lastSeen = Date.now();
+      save(s);
+      setTimeout(function () {
         document.getElementById('hwiPopup').classList.remove('active');
       }, 2500);
     });
   };
 
-  setTimeout(showPopup, 8000);
+  schedule();
 })();
 </script>
+
 <div class="ticker">
   <div class="ticker-track">
     <span>★ 100% of registration fees go to charity</span>
@@ -117,9 +160,9 @@
   <div class="wrap">
     <div class="charity-badge">100% of fees go to charity</div>
     <div class="hero-meta">
-      <span class="pill">Open Now</span>
-      <span><b>6th Han Wong Worldwide Open Online</b></span>
-      <span>· Deadline 30 July 2026</span>
+      <span class="pill">Next Up</span>
+      <span><b>Edinburgh International Open</b></span>
+      <span>· Registration opening soon</span>
     </div>
 
     <div class="hero-grid">
@@ -127,7 +170,7 @@
         <h1>Compete.<br>Connect.<br><span class="accent">Contribute.</span></h1>
         <p class="hero-sub">An online Taekwondo championship that channels every registration fee to families in need. Three tournaments a year. Judged by certified masters. Live-streamed on YouTube. Medals and trophies shipped straight to your dojang.</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register Now →</a>
+          <a class="btn btn-primary" href="tournaments.html">See Tournaments →</a>
           <a class="btn btn-ghost" href="https://www.facebook.com/profile.php?id=100063790375715&sk=photos" target="_blank">See Our Charity Work</a>
         </div>
       </div>
@@ -143,17 +186,6 @@
             <path d="M 136 195 L 174 278 L 184 284 L 178 290 L 140 264 L 132 195 Z"/>
           </g>
         </svg>
-      </div>
-    </div>
-
-    <div class="countdown" data-countdown="2026-07-30T23:59:00Z">
-      <div class="countdown-unit"><div class="countdown-num" data-d>00</div><div class="countdown-lbl">Days</div></div>
-      <div class="countdown-unit"><div class="countdown-num" data-h>00</div><div class="countdown-lbl">Hours</div></div>
-      <div class="countdown-unit"><div class="countdown-num" data-m>00</div><div class="countdown-lbl">Minutes</div></div>
-      <div class="countdown-unit"><div class="countdown-num" data-s>00</div><div class="countdown-lbl">Seconds</div></div>
-      <div class="countdown-info">
-        <div class="label">Registration Deadline</div>
-        <div class="value">30 July 2026</div>
       </div>
     </div>
   </div>
@@ -215,41 +247,43 @@
       <div class="rank-header">
         <span>Pos</span><span>Dojang / School</span><span>Country</span><span>Athletes</span><span class="rank-pts-h">Medals</span>
       </div>
-     <div class="rank-row">
+      <div class="rank-row">
         <div class="rank-pos top">01</div>
-        <div><div class="rank-name">Olympic Minsk</div><div class="rank-info">GM Hamid Nouri</div></div>
+        <div><div class="rank-name">Olympic Minsk Belarus</div><div class="rank-info">Hamid Nouri</div></div>
         <div class="rank-country"><span class="flag-emoji">🇧🇾</span>BLR</div>
-        <div class="rank-cat">0</div>
-        <div class="rank-pts">0</div>
+        <div class="rank-cat">15</div>
+        <div class="rank-pts">25</div>
       </div>
       <div class="rank-row">
         <div class="rank-pos top">02</div>
-        <div><div class="rank-name">Golden Eagle Taekwondo</div><div class="rank-info">Kanawat Sukcharoen</div></div>
-        <div class="rank-country"><span class="flag-emoji">🇹🇭</span>THA</div>
-        <div class="rank-cat">0</div>
-        <div class="rank-pts">0</div>
+        <div><div class="rank-name">HCT Martial Arts Academy</div><div class="rank-info">Master Carlo G Fernandez</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇵🇭</span>PHI</div>
+        <div class="rank-cat">25</div>
+        <div class="rank-pts">25</div>
       </div>
       <div class="rank-row">
         <div class="rank-pos top">03</div>
-        <div><div class="rank-name">Central Iowa Taekwondo Poomsae </div><div class="rank-info">GM Jim Harp </div></div>
-        <div class="rank-country"><span class="flag-emoji">🇺🇸</span>USA</div>
-        <div class="rank-cat">0</div>
-        <div class="rank-pts">0</div>
+        <div><div class="rank-name">Kalgoorlie Martial Arts</div><div class="rank-info">James Kolatowicz</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇦🇺</span>AUS</div>
+        <div class="rank-cat">11</div>
+        <div class="rank-pts">16</div>
       </div>
       <div class="rank-row">
         <div class="rank-pos ">04</div>
-        <div><div class="rank-name">Kalgoorlie Martial Arts</div><div class="rank-info">Master James Kolatowicz</div></div>
-        <div class="rank-country"><span class="flag-emoji">🇦🇺</span>AUS</div>
-       <div class="rank-cat">0</div>
-        <div class="rank-pts">0</div>
+        <div><div class="rank-name">Qatar Team</div><div class="rank-info">GM Wissam Elsharkawi</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇶🇦</span>QAT</div>
+        <div class="rank-cat">6</div>
+        <div class="rank-pts">12</div>
       </div>
       <div class="rank-row">
         <div class="rank-pos ">05</div>
-        <div><div class="rank-name">Taekwondo Club Junglinster</div><div class="rank-info">Teresa Majerus-Bednarz</div></div>
-        <div class="rank-country"><span class="flag-emoji">🇱🇺</span>LUX</div>
-        <div class="rank-cat">0</div>
-        <div class="rank-pts">0</div>
+        <div><div class="rank-name">Golden Kick Taekwondo Cayman Islands</div><div class="rank-info">Raga Krishtyan</div></div>
+        <div class="rank-country"><span class="flag-emoji">🇰🇾</span>CAY</div>
+        <div class="rank-cat">10</div>
+        <div class="rank-pts">12</div>
       </div>
+    </div>
+  </div>
 </section>
 
 <section class="section">
@@ -265,13 +299,13 @@
       </div>
       <div class="amb-card">
 <div class="amb-img">
-  <span class="amb-flag">🇪🇬</span>
+  <span class="amb-flag">🇺🇸</span>
   <img src="assets/images/5.jpg" alt="GM Jim Harp">
 </div>        <div class="amb-body"><div class="amb-name">GM Jim Harp</div><div class="amb-meta">United States · Senior Grand Master</div><div class="amb-bio">"An excellent opportunity to measure yourselves against international competition and contribute to charitable causes."</div></div>
       </div>
       <div class="amb-card">
 <div class="amb-img">
-  <span class="amb-flag">🇪🇬</span>
+  <span class="amb-flag">🇦🇺</span>
   <img src="assets/images/7.jpg" alt="GM Russ Wood">
 </div>        <div class="amb-body"><div class="amb-name">GM Russ Wood</div><div class="amb-meta">Australia · Senior Grand Master</div><div class="amb-bio">"After many online competitions over two years, HWI has proven to be the best and easiest we have dealt with."</div></div>
       </div>
@@ -286,12 +320,12 @@
     <h2 class="section-h">Watch past tournaments.</h2>
     <div class="video-grid">
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/KEr1-pXY8js?si=3-Jmxr0Rd4f1_wq-" title="6th Scotland Open" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">6th Scotland Open Online · Stream Day 2</div><div class="video-sub">2026 · Live on YouTube</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/_Grchkhfsrw" title="Han Wong Worldwide Open 2026 · Full Tournament Stream" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">Han Wong Worldwide Open 2026 · Full Tournament Stream</div><div class="video-sub">2026 · Han Wong International Open</div></div>
       </div>
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/BijSCNeOGR8?si=LrLbO0dbvV2IwRLr" title="3rd Edinburgh Open 2025" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">3rd Edinburgh Open 2025</div><div class="video-sub">2025 · Live on YouTube</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/KEr1-pXY8js" title="6th Scotland Open 2026 · Day 2 Individual Poomsae" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">6th Scotland Open 2026 · Day 2 Individual Poomsae</div><div class="video-sub">2026 · Scotland International Open</div></div>
       </div>
     </div>
     <div style="margin-top: 32px;"><a class="btn btn-ghost" href="past-results.html">All Past Tournaments →</a></div>
@@ -320,11 +354,11 @@
 <section class="final-cta">
   <div class="final-cta-inner">
     <div>
-      <div class="label">— 6th Han Wong Worldwide Open Online —</div>
+      <div class="label">— Next: Edinburgh International Open —</div>
       <h2>Train. Compete.<br>Change a life.</h2>
-      <p>Registration deadline is 30 July 2026. Register your athlete, your team, or your whole dojang. Every fee feeds the mission directly.</p>
+      <p>Registration for the Edinburgh International Open opens soon. Join the list and we will email you the moment entries are live — for your athlete, your team, or your whole dojang. Every fee feeds the mission directly.</p>
       <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-        <a class="btn btn-dark" href="https://forms.gle/E5Y1nCm2iuvZ8F46A" target="_blank">Register Now →</a>
+        <a class="btn btn-dark" href="contact.html">Join the Registration List →</a>
         <a class="btn btn-ghost" style="border-color: #0f0f0f; color: #0f0f0f;" href="https://forms.gle/8B7C7b8syNo3ztLY7" target="_blank">Partner Your Dojang</a>
       </div>
     </div>

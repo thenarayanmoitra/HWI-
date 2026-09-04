@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Past Results — Han Wong International</title>
-<meta name="description" content="Archive of past HWI tournaments. Livestream replays, downloadable posters, tournament outlines, and historical team standings.">
+<meta name="description" content="Archive of past Han Wong International tournaments. Full livestream replays of every Scotland International Open, Han Wong International Open and Edinburgh International Open.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -44,41 +44,83 @@
 </div>
 
 <script>
-(function() {
-  var shownCount = 0;
+(function () {
+  var LS_KEY       = 'hwiPopupState';
+  var SS_KEY       = 'hwiPopupSessionStart';
+  var FIRST_DELAY  = 20000;   // 1st showing: 20 seconds into the visit
+  var SECOND_DELAY = 120000;  // 2nd showing: 2 minutes after the 1st
+  var MAX_SHOWS    = 2;       // after that, never again
+  var timer = null;
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function save(s) {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  function sessionStart() {
+    try {
+      var t = parseInt(sessionStorage.getItem(SS_KEY), 10);
+      if (!t) { t = Date.now(); sessionStorage.setItem(SS_KEY, String(t)); }
+      return t;
+    } catch (e) { return Date.now(); }
+  }
+
+  function schedule() {
+    var s = load();
+    var shown = s.shown || 0;
+    if (shown >= MAX_SHOWS) return;
+    var due = shown === 0
+      ? sessionStart() + FIRST_DELAY
+      : (s.lastSeen || Date.now()) + SECOND_DELAY;
+    clearTimeout(timer);
+    timer = setTimeout(showPopup, Math.max(0, due - Date.now()));
+  }
 
   function showPopup() {
-    if (shownCount >= 2) return;
-    document.getElementById('hwiPopup').classList.add('active');
-    shownCount++;
+    var s = load();
+    if ((s.shown || 0) >= MAX_SHOWS) return;
+    var el = document.getElementById('hwiPopup');
+    if (!el) return;
+    el.classList.add('active');
+    s.shown = (s.shown || 0) + 1;
+    s.lastSeen = Date.now();
+    save(s);
   }
 
   function closeHwiPopup() {
-    document.getElementById('hwiPopup').classList.remove('active');
-    if (shownCount < 2) {
-      setTimeout(showPopup, 20000);
-    }
+    var el = document.getElementById('hwiPopup');
+    if (el) el.classList.remove('active');
+    var s = load();
+    s.lastSeen = Date.now();
+    save(s);
+    schedule();
   }
 
   window.closeHwiPopup = closeHwiPopup;
 
-  window.handleHwiSubmit = function(e) {
+  window.handleHwiSubmit = function (e) {
     e.preventDefault();
     var form = e.target;
     fetch(form.action, {
       method: 'POST',
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
-    }).then(function() {
+    }).then(function () {
       form.style.display = 'none';
       document.getElementById('hwiSuccess').style.display = 'block';
-      setTimeout(function() {
+      var s = load();
+      s.shown = MAX_SHOWS;          // subscribed — don't ask again
+      s.lastSeen = Date.now();
+      save(s);
+      setTimeout(function () {
         document.getElementById('hwiPopup').classList.remove('active');
       }, 2500);
     });
   };
 
-  setTimeout(showPopup, 8000);
+  schedule();
 })();
 </script>
 
@@ -118,146 +160,49 @@
   <div class="wrap">
     <div class="crumbs">Home / Past Results</div>
     <h1>Past<br><span class="accent">Tournaments.</span></h1>
-    <p class="lede">Every tournament. Every livestream. Every winner. The complete archive of HWI championships — plus downloadable posters and outlines.</p>
+    <p class="lede">Every tournament. Every livestream. Three championships a year, streamed in full on YouTube — the complete HWI archive.</p>
   </div>
 </section>
 
 <section class="section">
   <div class="wrap">
-    <div class="section-label">01 — Tournament Archive</div>
-    <h2 class="section-h">Five years.<br>12+ international events.</h2>
-    <div class="past-events">
-      <div class="past-event">
-        <div class="year">2025</div>
-        <h3>Scotland International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">452</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">39</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">02</span><span>Halim Taekwondo · IDN</span></div><div class="w-row"><span class="pos">03</span><span>Kim Academy · KOR</span></div>
-        </div>
-      </div>
-      <div class="past-event">
-        <div class="year">2025</div>
-        <h3>Han Wong International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">418</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">37</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Halim Taekwondo · IDN</span></div><div class="w-row"><span class="pos">02</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">03</span><span>Spinelli TKD · ITA</span></div>
-        </div>
-      </div>
-      <div class="past-event">
-        <div class="year">2024</div>
-        <h3>Edinburgh International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">421</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">36</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">02</span><span>Vargas Dojang · BRA</span></div><div class="w-row"><span class="pos">03</span><span>Kim Academy · KOR</span></div>
-        </div>
-      </div>
-      <div class="past-event">
-        <div class="year">2024</div>
-        <h3>Scotland International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">395</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">34</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Kim Academy · KOR</span></div><div class="w-row"><span class="pos">02</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">03</span><span>Lagos TKD · NGA</span></div>
-        </div>
-      </div>
-      <div class="past-event">
-        <div class="year">2024</div>
-        <h3>Han Wong International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">362</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">32</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">02</span><span>Halim Taekwondo · IDN</span></div><div class="w-row"><span class="pos">03</span><span>Edinburgh TKD · GBR</span></div>
-        </div>
-      </div>
-      <div class="past-event">
-        <div class="year">2023</div>
-        <h3>Edinburgh International Open</h3>
-        <div class="stats">
-          <div><div class="s-num">338</div><div class="s-lbl">Athletes</div></div>
-          <div><div class="s-num">30</div><div class="s-lbl">Countries</div></div>
-        </div>
-        <div class="top-winners">
-          <div class="w-row"><span class="pos">01</span><span>Spinelli TKD · ITA</span></div><div class="w-row"><span class="pos">02</span><span>Verma Dojang · IND</span></div><div class="w-row"><span class="pos">03</span><span>Wood Academy · AUS</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section rankings-bg">
-  <div class="wrap">
-    <div class="section-label">02 — Livestream Library</div>
-    <h2 class="section-h">Watch on YouTube.</h2>
+    <div class="section-label">01 — Livestream Library</div>
+    <h2 class="section-h">Watch past<br>tournaments.</h2>
+    <p style="font-size: 15px; color: var(--cream-dim); max-width: 640px; margin-bottom: 36px;">We run three tournaments every year — the Scotland International Open, the Han Wong International Open and the Edinburgh International Open. Every edition is streamed in full on YouTube. Watch them back below.</p>
 
     <div class="video-grid">
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID_1" title="4th Scotland Open Online" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">4th Scotland Open Online · Black Belt Team Poomsae</div><div class="video-sub">2024 · Scotland International Open</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/_Grchkhfsrw" title="Han Wong Worldwide Open 2026 · Full Tournament Stream" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">Han Wong Worldwide Open 2026 · Full Tournament Stream</div><div class="video-sub">2026 · Han Wong International Open</div></div>
       </div>
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID_2" title="Edinburgh Online Open 2023" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">Edinburgh Online Open 2023 · Colour Belt Poomsae</div><div class="video-sub">2023 · Edinburgh International Open</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/KEr1-pXY8js" title="6th Scotland Open 2026 · Day 2 Individual Poomsae" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">6th Scotland Open 2026 · Day 2 Individual Poomsae</div><div class="video-sub">2026 · Scotland International Open</div></div>
       </div>
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID_3" title="4th Han Wong Open 2024" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">4th Han Wong Open Online · Speed Kicking Championship</div><div class="video-sub">2024 · Han Wong International Open</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/xxij4VUK95Q" title="6th Scotland Open 2026 · Day 1 Poomsae and Kyukpa" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">6th Scotland Open 2026 · Day 1 Poomsae and Kyukpa</div><div class="video-sub">2026 · Scotland International Open</div></div>
       </div>
       <div class="video-card">
-        <div class="video-embed"><iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID_4" title="Han Wong Worldwide Open" frameborder="0" allowfullscreen></iframe></div>
-        <div class="video-meta"><div class="video-title">Han Wong Worldwide International · Speed Kicking</div><div class="video-sub">2024 · Special edition</div></div>
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/2SvoOtjXDHA" title="5th Han Wong Worldwide Open 2025 · Colour Belt Individual Poomsae" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">5th Han Wong Worldwide Open 2025 · Colour Belt Individual Poomsae</div><div class="video-sub">2025 · Han Wong International Open</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/lsHiU87v_Vc" title="5th Scotland Open · Day 5 Correction Videos" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">5th Scotland Open · Day 5 Correction Videos</div><div class="video-sub">Scotland International Open</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/SKTjuGkluJk" title="2nd Edinburgh Open Online · Speed Kicking" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">2nd Edinburgh Open Online · Speed Kicking</div><div class="video-sub">Edinburgh International Open</div></div>
+      </div>
+      <div class="video-card">
+        <div class="video-embed"><iframe src="https://www.youtube.com/embed/GitfKjUCGxk" title="4th Han Wong Open Online 2024 · Poomsae and Speed Kicking" frameborder="0" allowfullscreen></iframe></div>
+        <div class="video-meta"><div class="video-title">4th Han Wong Open Online 2024 · Poomsae and Speed Kicking</div><div class="video-sub">2024 · Han Wong International Open</div></div>
       </div>
     </div>
 
     <div style="margin-top: 32px; text-align: center;">
-      <a class="btn btn-ghost" href="https://www.youtube.com/@hanwonginternational" target="_blank">Full YouTube Channel →</a>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="wrap">
-    <div class="section-label">03 — Downloads</div>
-    <h2 class="section-h">Posters, outlines<br>&amp; materials.</h2>
-    <p style="font-size: 15px; color: var(--cream-dim); max-width: 640px; margin-bottom: 36px;">Every tournament's official poster, full tournament outline, and registration materials — downloadable for promotion, coaching prep, and dojang briefings. Share via WhatsApp, post on social media, print and pin up.</p>
-
-    <div class="download-grid">
-      <a class="download-card" href="downloads/scotland-open-2026-poster.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">Scotland Open 2026 · Poster</div><div class="download-meta">Spring · A3 print-ready</div></div>
-      </a>
-      <a class="download-card" href="downloads/scotland-open-2026-outline.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">Scotland Open 2026 · Tournament Outline</div><div class="download-meta">Rules, categories, fees, submissions</div></div>
-      </a>
-      <a class="download-card" href="downloads/han-wong-open-2026-poster.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">Han Wong Open 2026 · Poster</div><div class="download-meta">Summer · A3 print-ready</div></div>
-      </a>
-      <a class="download-card" href="downloads/partnership-program-deck.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">Dojang Partnership Deck</div><div class="download-meta">For coaches and school directors</div></div>
-      </a>
-      <a class="download-card" href="downloads/hwi-introduction-deck.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">HWI Introduction Deck</div><div class="download-meta">About the championship</div></div>
-      </a>
-      <a class="download-card" href="downloads/charity-impact-2024.pdf" download>
-        <div class="download-icon">PDF</div>
-        <div><div class="download-title">2024 Charity Impact Report</div><div class="download-meta">Where the money went</div></div>
-      </a>
+      <a class="btn btn-ghost" href="https://www.youtube.com/@hanwongintl" target="_blank">Full YouTube Channel →</a>
     </div>
   </div>
 </section>
