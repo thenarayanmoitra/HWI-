@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Content check · Han Wong International</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/aileron@5.3.0/latin-400.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/aileron@5.3.0/latin-700.css" rel="stylesheet">
+<style>
+  :root { --orange: #db4a2b; --cream: #e4e2dd; --ink: #1a1612; --muted: #5c554d; --ok: #2f7d4f; --bad: #b3261e; --warn: #9a6b00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--cream); color: var(--ink); font-family: Aileron, "Helvetica Neue", Arial, sans-serif; font-size: 18px; line-height: 1.55; }
+  header { background: var(--orange); color: var(--cream); padding: 28px 20px; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+  header .wrap { padding: 0; }
+  h1 { font-family: "Archivo Black", sans-serif; font-weight: 400; font-size: 34px; line-height: 1.05; margin: 0 0 6px; letter-spacing: -0.02em; }
+  header p { margin: 0; font-weight: 700; }
+  main { padding: 28px 0 60px; }
+  .summary { border-radius: 16px; padding: 22px 24px; margin-bottom: 26px; font-weight: 700; font-size: 20px; }
+  .summary.ok { background: #d9ecdf; color: #17442a; }
+  .summary.bad { background: #f6d9d6; color: #6b1510; }
+  .summary small { display: block; font-weight: 400; font-size: 16.5px; margin-top: 6px; }
+  section { background: #f3f1ec; border-radius: 14px; padding: 18px 22px; margin-bottom: 14px; }
+  h2 { font-size: 19px; margin: 0 0 10px; display: flex; justify-content: space-between; gap: 12px; }
+  h2 span { font-weight: 400; color: var(--muted); font-size: 16px; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { padding: 6px 0 6px 30px; position: relative; font-size: 16.5px; border-top: 1px solid rgba(26,22,18,.08); }
+  li:first-child { border-top: 0; }
+  li::before { position: absolute; left: 0; top: 5px; font-weight: 700; width: 22px; text-align: center; }
+  li.ok::before { content: "✓"; color: var(--ok); }
+  li.bad::before { content: "✕"; color: var(--bad); }
+  li.warn::before { content: "!"; color: var(--warn); }
+  li.bad { color: #6b1510; font-weight: 700; }
+  pre { background: var(--ink); color: var(--cream); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-size: 14.5px; line-height: 1.5; }
+  pre mark { background: var(--orange); color: #fff; }
+  .flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .flags img { width: 30px; height: 22.5px; border-radius: 3px; object-fit: cover; box-shadow: 0 0 0 1px rgba(26,22,18,.12); }
+  a { color: var(--ink); font-weight: 700; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 18px; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Content check</h1><p>Open this page after every change to assets/content.js</p></div></header>
+<main class="wrap">
+  <div id="out"><p>Checking…</p></div>
+  <div class="links"><a href="index.html">Open the home page</a><a href="partnership.html">Partnership page</a><a href="hall-of-fame.html">Hall of Fame page</a></div>
+</main>
+
+<script>
+  window.__loadError = null;
+  window.addEventListener('error', function (e) {
+    if (e.filename && e.filename.indexOf('content.js') > -1) window.__loadError = { line: e.lineno, col: e.colno, msg: e.message };
+  }, true);
+</script>
+<script src="assets/content.js" onerror="window.__missing = true"></script>
+<script>
+(function () {
+  var out = document.getElementById('out');
+  var FLAG = 'https://cdn.jsdelivr.net/npm/flag-icons@7.5.0/flags/4x3/';
+  var problems = 0, warnings = 0;
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function ytId(link) {
+    link = String(link || '').trim();
+    if (/^[\w-]{11}$/.test(link)) return link;
+    var m = link.match(/(?:[?&]v=|youtu\.be\/|embed\/|shorts\/|live\/)([\w-]{11})/);
+    return m ? m[1] : '';
+  }
+  function validCode(c) { return /^[a-z]{2}(-[a-z]{3})?$/.test(String(c || '').toLowerCase().trim()); }
+  function list(v) { return Array.isArray(v) ? v : []; }
+
+  var sections = [];
+  function section(title, note) { var s = { title: title, note: note || '', items: [] }; sections.push(s); return s; }
+  function ok(s, t) { s.items.push({ c: 'ok', t: t }); }
+  function bad(s, t) { s.items.push({ c: 'bad', t: t }); problems++; }
+  function warn(s, t) { s.items.push({ c: 'warn', t: t }); warnings++; }
+
+  // Checks that need the network (files, flags) run in parallel and report back
+  var pending = [];
+  function fileExists(path) {
+    if (!path || /^https?:/i.test(path)) return Promise.resolve(true);
+    return fetch(path, { method: 'HEAD', cache: 'no-store' }).then(function (r) { return r.ok; }).catch(function () { return false; });
+  }
+  function checkFile(s, path, label) {
+    pending.push(fileExists(path).then(function (yes) {
+      if (yes) ok(s, label + ' found'); else bad(s, label + ': the file “' + esc(path) + '” is not on the website. Check the spelling, or upload it.');
+    }));
+  }
+  function imageLoads(url) {
+    return new Promise(function (res) { var i = new Image(); i.onload = function () { res(true); }; i.onerror = function () { res(false); }; i.src = url; });
+  }
+
+  function render() {
+    var html = '';
+    if (problems === 0) html += '<div class="summary ok">✓ Everything looks good.' + (warnings ? '<small>' + warnings + ' note' + (warnings > 1 ? 's' : '') + ' below are worth a look, but nothing is broken.</small>' : '<small>Your changes are safe to publish.</small>') + '</div>';
+    else html += '<div class="summary bad">✕ ' + problems + ' thing' + (problems > 1 ? 's' : '') + ' to fix in assets/content.js<small>Fix the red lines below, save, and reload this page.</small></div>';
+    sections.forEach(function (s) {
+      html += '<section><h2>' + s.title + (s.note ? '<span>' + s.note + '</span>' : '') + '</h2><ul>' +
+        s.items.map(function (i) { return '<li class="' + i.c + '">' + i.t + '</li>'; }).join('') + '</ul>' + (s.extra || '') + '</section>';
+    });
+    out.innerHTML = html;
+  }
+
+  // ------------------------------------------------------------ 1. did the file load?
+  var C = window.HWI;
+  if (window.__missing || window.__loadError || !C) {
+    var s0 = section('The content file');
+    if (window.__missing) {
+      bad(s0, 'assets/content.js could not be found. Make sure the file is in the assets folder.');
+      render(); return;
+    }
+    var e = window.__loadError || {};
+    bad(s0, 'There is a typing mistake' + (e.line ? ' on <b>line ' + e.line + '</b>' : '') + ' of assets/content.js.' +
+      '<br>Most often this is a missing comma at the end of the line above, or a missing " quote mark.' +
+      (e.msg ? '<br><span style="font-weight:400">Browser message: ' + esc(e.msg) + '</span>' : ''));
+    render();
+    if (e.line) {
+      fetch('assets/content.js', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (txt) {
+        var lines = txt.split('\n'), from = Math.max(0, e.line - 4), to = Math.min(lines.length, e.line + 2), snip = '';
+        for (var n = from; n < to; n++) snip += (n + 1 === e.line ? '<mark>' : '') + String(n + 1).padStart(4, ' ') + '  ' + esc(lines[n]) + (n + 1 === e.line ? '</mark>' : '') + '\n';
+        s0.extra = '<pre>' + snip + '</pre>';
+        render();
+      });
+    }
+    return;
+  }
+  ok(section('The content file'), 'assets/content.js loaded with no typing mistakes');
+
+  // ------------------------------------------------------------ 2. links
+  var L = C.links || {};
+  var sL = section('Links');
+  [['register', 'Registration form'], ['partnership', 'Partnership form'], ['whatsappGroup', 'WhatsApp group'], ['whatsappChat', 'WhatsApp chat'], ['facebook', 'Facebook'], ['facebookPhotos', 'Facebook photos'], ['youtube', 'YouTube']].forEach(function (k) {
+    var v = L[k[0]];
+    if (!v) bad(sL, k[1] + ' link is empty');
+    else if (!/^https?:\/\//i.test(v)) bad(sL, k[1] + ' link should start with https://');
+    else ok(sL, k[1] + ': <a href="' + esc(v) + '" target="_blank" rel="noopener">test it</a>');
+  });
+  if (!L.email || L.email.indexOf('@') < 0) bad(sL, 'Email address looks wrong'); else ok(sL, 'Email: ' + esc(L.email));
+
+  // ------------------------------------------------------------ 3. event
+  var ev = C.event || {};
+  var sE = section('The championship you are promoting', esc(ev.name || ''));
+  if (!ev.name) bad(sE, 'The event has no name'); else ok(sE, 'Name: ' + esc(ev.name));
+  if (ev.status) ok(sE, 'Status badge: “' + esc(ev.status) + '”');
+  if (typeof ev.registrationOpen !== 'boolean') bad(sE, 'registrationOpen must be true or false (no quote marks)');
+  else ok(sE, ev.registrationOpen ? 'Register buttons are ON and open the registration form' : 'Register buttons say “Get notified” and open WhatsApp');
+  if (ev.registerLink && !/^https?:\/\//i.test(ev.registerLink)) bad(sE, 'registerLink should start with https://');
+  if (ev.closes) {
+    var d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(ev.closes) ? ev.closes + 'T23:59:59' : ev.closes);
+    if (isNaN(d)) bad(sE, 'The deadline “' + esc(ev.closes) + '” is not a date. Write it like "2026-11-15".');
+    else if (d < new Date()) warn(sE, 'The deadline ' + esc(ev.closes) + ' has passed, so the site says “Entries closed”.');
+    else ok(sE, 'Countdown is on, ending ' + d.toDateString());
+  } else ok(sE, 'No countdown (no deadline set)');
+  if (ev.poster) checkFile(sE, ev.poster, 'Poster'); else warn(sE, 'No poster yet. The Download poster button shows “Coming soon”.');
+  if (ev.guidelines) checkFile(sE, ev.guidelines, 'Guidelines'); else warn(sE, 'No guidelines yet. The Download guidelines button shows “Coming soon”.');
+  if (!Array.isArray(ev.details)) bad(sE, 'details must be a list like [ ["When", "Late 2026"], … ]');
+
+  // ------------------------------------------------------------ 4. numbers, calendar
+  var sS = section('Numbers and calendar');
+  var stats = list(C.stats);
+  if (!stats.length) bad(sS, 'The numbers list is empty');
+  stats.forEach(function (st, i) {
+    if (typeof st.number !== 'number') bad(sS, 'Number ' + (i + 1) + ' (“' + esc(st.label) + '”) must be a plain number without quote marks, like 2000');
+  });
+  if (stats.length) ok(sS, stats.map(function (st) { return esc(st.number) + esc(st.after || ''); }).join(' · '));
+  list(C.calendar).forEach(function (c, i) { if (!c.name) bad(sS, 'Calendar item ' + (i + 1) + ' has no name'); });
+  ok(sS, list(C.calendar).length + ' championships in the calendar');
+
+  // ------------------------------------------------------------ 5. flags
+  var sF = section('Flags');
+  var codes = String(C.flags || '').toLowerCase().split(/[\s,]+/).filter(Boolean);
+  var badCodes = codes.filter(function (c) { return !validCode(c); });
+  if (badCodes.length) bad(sF, 'These are not two-letter country codes: ' + badCodes.map(esc).join(', '));
+  var good = codes.filter(validCode);
+  sF.extra = '<div class="flags">' + good.map(function (c) { return '<img src="' + FLAG + c + '.svg" alt="' + c + '" title="' + c + '">'; }).join('') + '</div>';
+  pending.push(Promise.all(good.map(function (c) { return imageLoads(FLAG + c + '.svg').then(function (y) { return y ? null : c; }); })).then(function (r) {
+    var unknown = r.filter(Boolean);
+    if (unknown.length) bad(sF, 'No flag exists for: ' + unknown.join(', ') + '. Check the codes at flagicons.lipis.dev');
+    else ok(sF, good.length + ' flags, all found');
+  }));
+
+  // ------------------------------------------------------------ 6. results
+  var R = C.results || {};
+  var sR = section('Team standings', esc(R.championship || ''));
+  var teams = list(R.teams);
+  if (!teams.length) warn(sR, 'No teams listed, so the standings section is hidden');
+  teams.forEach(function (t, i) {
+    var where = 'Team ' + (i + 1) + (t.dojang ? ' (' + esc(t.dojang) + ')' : '');
+    if (!t.dojang) bad(sR, where + ' has no dojang name');
+    if (!validCode(t.country)) bad(sR, where + ': country should be a two-letter code, like "au"');
+    if (typeof t.medals !== 'number') bad(sR, where + ': medals must be a plain number');
+    if (typeof t.athletes !== 'number') bad(sR, where + ': athletes must be a plain number');
+    if (i > 0 && typeof t.medals === 'number' && typeof teams[i - 1].medals === 'number' && t.medals > teams[i - 1].medals) warn(sR, where + ' has more medals than the team above it. Is the order right?');
+  });
+  if (teams.length) ok(sR, teams.length + ' teams. Top three: ' + teams.slice(0, 3).map(function (t) { return esc(t.dojang); }).join(', '));
+
+  // ------------------------------------------------------------ 7. videos
+  var sV = section('Videos');
+  var vids = list(C.videos);
+  vids.forEach(function (v, i) {
+    var where = 'Video ' + (i + 1) + (v.title ? ' (' + esc(v.title) + ')' : '');
+    if (!v.link) warn(sV, where + ': no link yet, shown as “Coming soon”');
+    else if (!ytId(v.link)) bad(sV, where + ': this doesn’t look like a YouTube link');
+  });
+  ok(sV, vids.filter(function (v) { return ytId(v.link); }).length + ' videos ready to play');
+
+  // ------------------------------------------------------------ 8. people + photos
+  var sP = section('Testimonials, photos and people');
+  list(C.testimonials).forEach(function (t, i) {
+    if (!t.quote || !t.name) bad(sP, 'Testimonial ' + (i + 1) + ' needs both a quote and a name');
+    if (t.photo) checkFile(sP, t.photo, 'Photo for ' + esc(t.name || 'testimonial ' + (i + 1)));
+  });
+  ok(sP, list(C.testimonials).length + ' testimonials');
+  list((C.charity || {}).photos).forEach(function (p, i) { checkFile(sP, p.src, 'Charity photo ' + (i + 1)); });
+  [['ambassadors', 'Ambassador'], ['hallOfFame', 'Hall of Fame'], ['achievers', 'Achiever']].forEach(function (g) {
+    list(C[g[0]]).forEach(function (p, i) {
+      if (!validCode(p.country)) bad(sP, g[1] + ' ' + esc(p.name || i + 1) + ': country should be a two-letter code');
+      if (p.photo) checkFile(sP, p.photo, g[1] + ' photo: ' + esc(p.name));
+    });
+  });
+  list(C.winningTeams).forEach(function (t) { checkFile(sP, t.photo, 'Team photo: ' + esc(t.name)); });
+
+  render();
+  Promise.all(pending).then(function () {
+    // keep the list short: collapse all the “found” lines per section into one
+    sections.forEach(function (s) {
+      var found = s.items.filter(function (i) { return i.c === 'ok' && / found$/.test(i.t); });
+      if (found.length > 2) {
+        s.items = s.items.filter(function (i) { return found.indexOf(i) < 0; });
+        s.items.push({ c: 'ok', t: found.length + ' files found' });
+      }
+    });
+    render();
+  });
+})();
+</script>
+</body>
+</html>
